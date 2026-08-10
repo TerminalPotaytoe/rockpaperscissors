@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+</head>
+<body>
+    <h1>Rock Paper Scissorsss</h1><hr>
+    <button id="start" style="padding: 12px 24px; font-size: 16px;">PLAY</button><hr>
+    <h2 id="poption">PLAYER CHOOSE: </h2>
+    <h2 id="coption">COMPUTER CHOOSE: </h2><hr>
+    <h2 id="result">RESULT: </h2>
+
+
+    
+    <script>
+        // VARS
+        const result = document.querySelector('#result');
+        const poption = document.querySelector('#poption');
+        const coption = document.querySelector('#coption');
+        const startbtn = document.querySelector('#start');
+
+
+        let playerChoice = () => {
+            let pchoice;
+
+            while (!(pchoice >= 1 && pchoice <= 3)){
+                pchoice = parseInt(prompt("Rock (1) paper (2) or scissors (3): "));
+            }
+
+            return pchoice;
+            
+        }
+
+        let computerChoice = () => {
+            return Math.floor(Math.random()*3)+1;
+        }
+
+
+        function play(playerCallback, computerCallback) {
+            let pchoice = playerCallback();
+            let cchoice = computerCallback();
+            let winner = "";
+            result.textContent = "WINNER: ";
+            poption.textContent = "PLAYER CHOOSE: ";
+            coption.textContent = "COMPUTER CHOOSE: ";
+
+
+            const choices = ['Rock', 'Paper', 'Scissors'];
+            poption.textContent += choices[pchoice-1];
+            coption.textContent += choices[cchoice-1];
+
+            // DRAW
+            if (pchoice === cchoice) {
+                winner = "DRAW";
+            }
+
+            // PLAYER WIN
+            else if (pchoice === 1 && cchoice === 3 || pchoice === 2 && cchoice === 1 || pchoice === 3 && cchoice === 2){
+                winner = "PLAYER";
+            }
+            // COMPUTER WIN
+            else if (cchoice === 1 && pchoice === 3 || cchoice === 2 && pchoice === 1 || cchoice === 3 && pchoice === 2){
+                winner = "COMPUTER";
+            }
+            // INVALID
+            // else{
+            //     result.textContent="INVALID";
+            // }
+
+            result.textContent += winner;
+        }
+
+        startbtn.addEventListener("click", () => {
+            play(playerChoice, computerChoice)
+        });
+
+
+
+    </script>
+</body>
+</html>
