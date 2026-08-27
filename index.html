@@ -4,77 +4,165 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rock Paper Scissors</title>
+    <style>
+
+        .button {
+            padding: 15px 30px;
+            font-size: large;
+            border: 3px solid black;
+            border-radius: 15px;
+            align-items: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+         
+
+    </style>
 </head>
 <body>
-    <h1>Rock Paper Scissorsss</h1><hr>
-    <button id="start" style="padding: 12px 24px; font-size: 16px;">PLAY</button><hr>
-    <h2 id="poption">PLAYER CHOOSE: </h2>
-    <h2 id="coption">COMPUTER CHOOSE: </h2><hr>
-    <h2 id="result">RESULT: </h2>
-
-
+    <h1>Rock Paper Scissors</h1>
+    <button id="playbtn" class="button">Play</button>
+    <hr>
+    <div id="options">
+        <button value="1" class="hidden">ROCK</button>
+        <button value="2" class="hidden">PAPER</button>
+        <button value="3" class="hidden">SCISSORS</button>
+    </div>
     
+    <div id="move">
+        <h2 id="playermove" class="hidden">Player: </h2>
+        <h2 id="computermove" class="hidden">Computer: </h2>
+    </div>
+
+    <hr>
+    <h2 id="ppoints" class="hidden">Your Points: </h2>
+    <h2 id="cpoints" class="hidden">Computer's Points: </h2>
+    <h2 id="winnertext" class="hidden">Winner: </h2>
+
+
+    <div class="hidden" id="winnerdiv"><h2  id="truewinner"><hr>TRUE WINNER: </h2></div>
+
+
+
+
     <script>
-        // VARS
-        const result = document.querySelector('#result');
-        const poption = document.querySelector('#poption');
-        const coption = document.querySelector('#coption');
-        const startbtn = document.querySelector('#start');
+        const playbtn = document.querySelector('#playbtn');
+        const optiondiv = document.querySelector('#options');
+        const playermove = document.querySelector('#playermove');
+        const computermove = document.querySelector('#computermove');
+        const ppointstext = document.querySelector('#ppoints');
+        const cpointstext = document.querySelector('#cpoints');
+        const winnertext = document.querySelector('#winnertext');
+        const truewinner = document.querySelector('#truewinner');
+        const winnerdiv = document.querySelector('#winnerdiv');
+        let ppoints = 0;
+        let cpoints = 0;
+        let allowplay = true;
+        const computerChoice = () => {
+            return Math.floor(Math.random()*3+1);
+        }
 
+        function playerChoice() {
+            return new Promise((resolve)=>{
+                const options = document.querySelectorAll('#options button')
+                options.forEach((options) => {
+                    options.classList.remove('hidden');
+                    options.addEventListener("click", ()=>{
+                        resolve(Number(options.value));
+                    })
+                })
+            })
+        }
 
-        let playerChoice = () => {
-            let pchoice;
-
-            while (!(pchoice >= 1 && pchoice <= 3)){
-                pchoice = parseInt(prompt("Rock (1) paper (2) or scissors (3): "));
+        playbtn.addEventListener("click", () => {
+            if (allowplay){
+                playRound();
             }
+            else {
+                if (ppoints >= 5){
 
-            return pchoice;
+                }
+            }
             
-        }
+        })
 
-        let computerChoice = () => {
-            return Math.floor(Math.random()*3)+1;
-        }
+        const instruction = document.createElement('h2');
+
+        async function playRound() {
+            const cchoice = computerChoice();
+            optiondiv.prepend(instruction);
+            instruction.textContent="PLEASE CHOOSE AN OPTION";
+            const pchoice = await playerChoice();
+            
+            
+            playermove.classList.remove('hidden');
+            computermove.classList.remove('hidden');
 
 
-        function play(playerCallback, computerCallback) {
-            let pchoice = playerCallback();
-            let cchoice = computerCallback();
-            let winner = "";
-            result.textContent = "WINNER: ";
-            poption.textContent = "PLAYER CHOOSE: ";
-            coption.textContent = "COMPUTER CHOOSE: ";
+            
+            
 
+            const choices = ['ROCK', 'PAPER', 'SCISSORS'];
+            playermove.textContent = `Player: ${choices[pchoice-1]}`;
+            computermove.textContent = `Computer: ${choices[cchoice-1]}`;
 
-            const choices = ['Rock', 'Paper', 'Scissors'];
-            poption.textContent += choices[pchoice-1];
-            coption.textContent += choices[cchoice-1];
-
-            // DRAW
+            //DRAW
             if (pchoice === cchoice) {
                 winner = "DRAW";
             }
-
             // PLAYER WIN
             else if (pchoice === 1 && cchoice === 3 || pchoice === 2 && cchoice === 1 || pchoice === 3 && cchoice === 2){
                 winner = "PLAYER";
+                ppoints += 1;
             }
             // COMPUTER WIN
             else if (cchoice === 1 && pchoice === 3 || cchoice === 2 && pchoice === 1 || cchoice === 3 && pchoice === 2){
                 winner = "COMPUTER";
+                cpoints += 1;
             }
-            // INVALID
-            // else{
-            //     result.textContent="INVALID";
-            // }
+            instruction.textContent=`WINNER: ${winner}`;
+            ppointstext.classList.remove('hidden');
+            cpointstext.classList.remove('hidden');
+            
+            ppointstext.textContent = `PLAYER POINTS: ${ppoints}`;
+            cpointstext.textContent =  `COMPUTER POINTS: ${cpoints}`;
 
-            result.textContent += winner;
+            if (ppoints >= 5){
+                winnerdiv.classList.remove('hidden');
+                truewinner.textContent="TRUE WINNER: PLAYER";
+                playermove.classList.add('hidden');
+                computermove.classList.add('hidden');
+                allowplay = false;
+            }
+            else if (cpoints >= 5){
+                winnerdiv.classList.remove('hidden');
+                truewinner.textContent="TRUE WINNER: COMPUTER";
+                playermove.classList.add('hidden');
+                computermove.classList.add('hidden');
+                allowplay = false;
+            }
+            
+
+
+
+
+
+
+
+
+            
+
+
+
+
+        
         }
+        
 
-        startbtn.addEventListener("click", () => {
-            play(playerChoice, computerChoice)
-        });
+
 
 
 
